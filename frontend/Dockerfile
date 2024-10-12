@@ -1,29 +1,19 @@
-FROM node:16 as build
+FROM node:18 as build
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY package.json ./
 RUN npm install
+
+COPY .env ./
 
 COPY . .
 
 RUN npm run build
 
-FROM python:3.9-slim
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
 
-RUN pip install flask
+EXPOSE 80
 
-WORKDIR /app
-
-COPY --from=build /app/dist ./frontend/dist
-
-COPY ../backend/app.py ./app.py
-COPY ../backend/model ./model
-COPY ../backend/requirements.txt ./requirements.txt
-
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
-
-EXPOSE 5000
-
-CMD ["python", "app.py"]
+CMD ["nginx", "-g", "daemon off;"]

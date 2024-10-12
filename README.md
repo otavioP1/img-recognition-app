@@ -6,8 +6,9 @@
 Baixe o arquivo [yolov3.weights](https://pjreddie.com/media/files/yolov3.weights) e coloque-o em `/backend/model`
 
 ### Rodando localmente
-Copie o `.env.example` para `.env`
+Copie o `frontend/.env.example` para `frontend/.env`
 ```Bash
+cd frontend
 cp .env.example .env
 ```
 
