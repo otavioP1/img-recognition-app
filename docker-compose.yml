@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: object_recognition_backend
     volumes:
-      - ./backend/model:/app/model
+      - ./backend:/app
     ports:
       - "5000:5000"
     networks:

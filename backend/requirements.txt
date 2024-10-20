@@ -2,3 +2,6 @@ flask
 flask-cors
 opencv-python
 numpy
+transformers
+torch
+torchvision
