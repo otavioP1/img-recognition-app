@@ -16,5 +16,5 @@ E suba os containers do docker
 ```Bash
 docker-compose up --build
 ```
-O aplicação ficará acessível em: http://localhost:3000/index.html
+O aplicação ficará acessível em: http://localhost:3000
 
