@@ -1,7 +1,7 @@
 import os
 import cv2
 import numpy as np
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from transformers import BlipProcessor, BlipForConditionalGeneration
 
