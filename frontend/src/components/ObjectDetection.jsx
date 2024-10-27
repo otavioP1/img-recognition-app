@@ -6,8 +6,6 @@ const ObjectDetection = () => {
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
-
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
     setDetections([]);
@@ -24,11 +22,11 @@ const ObjectDetection = () => {
 
     try {
       const [detectionResponse, descriptionResponse] = await Promise.all([
-        fetch(`${API_BASE_URL}/detect`, {
+        fetch(`/api/detect`, {
           method: 'POST',
           body: formData,
         }),
-        fetch(`${API_BASE_URL}/describe`, {
+        fetch(`/api/describe`, {
           method: 'POST',
           body: formData,
         }),
