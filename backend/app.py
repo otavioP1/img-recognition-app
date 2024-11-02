@@ -4,6 +4,7 @@ import numpy as np
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from transformers import BlipProcessor, BlipForConditionalGeneration
+from deep_translator import GoogleTranslator
 
 app = Flask(__name__, static_folder='../frontend', static_url_path='/')
 CORS(app)
@@ -31,15 +32,15 @@ model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-capt
 @app.route('/describe', methods=['POST'])
 def describe_image():
 	if 'image' not in request.files:
-		return jsonify({"error": "No image file provided"}), 400
+		return jsonify({"error": "Nenhuma imagem enviada"}), 400
 
 	file = request.files['image']
 
-	img_array = np.fromstring(file.read(), np.uint8)
+	img_array = np.frombuffer(file.read(), np.uint8)
 	img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
 
 	if img is None:
-		return jsonify({"error": "Invalid image"}), 400
+		return jsonify({"error": "Imagem inválida"}), 400
 
 	img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 	inputs = processor(images=img, return_tensors="pt")
@@ -47,12 +48,14 @@ def describe_image():
 	outputs = model.generate(**inputs)
 	description = processor.decode(outputs[0], skip_special_tokens=True)
 
-	return jsonify({"description": description}), 200
+	translated_description = GoogleTranslator(source='auto', target='pt').translate(description)
+
+	return jsonify({"description": translated_description}), 200
 
 @app.route('/detect', methods=['POST'])
 def detect_objects():
 	if 'image' not in request.files:
-		return jsonify({"error": "No image file provided"}), 400
+		return jsonify({"error": "Nenhuma imagem enviada"}), 400
 
 	file = request.files['image']
 
@@ -60,7 +63,7 @@ def detect_objects():
 	img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
 
 	if img is None:
-		return jsonify({"error": "Invalid image"}), 400
+		return jsonify({"error": "Imagem inválida"}), 400
 
 	height, width, channels = img.shape
 
@@ -101,7 +104,7 @@ def detect_objects():
 	if len(indexes) > 0:
 		for i in indexes.flatten():
 			obj = {
-				"name": classes[class_ids[i]],
+				"name": GoogleTranslator(source='auto', target='pt').translate(classes[class_ids[i]]),
 				"x": boxes[i][0],
 				"y": boxes[i][1],
 				"width": boxes[i][2],
@@ -113,4 +116,4 @@ def detect_objects():
 	return jsonify(detected_objects)
 
 if __name__ == '__main__':
-	app.run(host='0.0.0.0', port=5000)
+	app.run(host='0.0.0.0', port=5000, debug=True)
