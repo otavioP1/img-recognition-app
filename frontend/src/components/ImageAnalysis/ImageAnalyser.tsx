@@ -1,5 +1,14 @@
 import React, { useState, useRef } from 'react';
-import { DetectedObject } from './DetectedObject.tsx';
+import { DetectedObject } from './DetectedObject/DetectedObject.tsx';
+
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
+
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert"
+
 import { Button } from '@/components/ui/button';
 
 export function ImageAnaliser() {
@@ -8,6 +17,7 @@ export function ImageAnaliser() {
   const [detections, setDetections] = useState<any[]>([]);
   const [description, setDescription] = useState<string>('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
 
@@ -26,6 +36,7 @@ export function ImageAnaliser() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    setError('');
     e.preventDefault();
     if (!selectedFile) return;
 
@@ -48,28 +59,29 @@ export function ImageAnaliser() {
 
       if (!detectionResponse.ok) {
         const errorData = await detectionResponse.json();
-        alert(`Detection Error: ${errorData.error}`);
+        setError(`Não conseguimos processar a imagem: ${errorData.error}`);
         setLoading(false);
         return;
       }
 
       const detectionData = await detectionResponse.json();
-      console.log(detectionData);
       setDetections(detectionData);
+      if (detectionData.length == 0) {
+        setError(`Nenhum objeto detectado`);
+      }
 
       if (!descriptionResponse.ok) {
         const errorData = await descriptionResponse.json();
-        alert(`Description Error: ${errorData.error}`);
+        setError(`Não conseguimos processar a imagem: ${errorData.error}`);
         setLoading(false);
         return;
       }
 
       const descriptionData = await descriptionResponse.json();
-      console.log(descriptionData)
       setDescription(descriptionData.description);
     } catch (error) {
       console.error('Error:', error);
-      alert('An error occurred while processing the image.');
+      setError('Ocorreu um erro ao processar a imagem.');
     } finally {
       setLoading(false);
     }
@@ -77,8 +89,8 @@ export function ImageAnaliser() {
 
   return (
     <div className='flex h-screen items-center justify-center'>
-      <div className="p-6 text-white bg-[#1e3a5f] rounded-lg shadow-lg">
-        <h1 className="text-2xl font-bold mb-4">Object Detection and Image Description</h1>
+      <div className="p-6 text-white bg-blue-900 rounded-lg shadow-lg flex flex-col gap-4">
+        <h1 className="text-2xl font-bold">Análise de imagens</h1>
         <form onSubmit={handleSubmit}>
           <input
             type="file"
@@ -87,13 +99,13 @@ export function ImageAnaliser() {
             onChange={handleFileChange}
             className='hidden'
           />
-          <Button variant={'outline'} onClick={handleUploadClick} className='mb-4'>
-            Upload Image
+          <Button type='button' variant={'outline'} onClick={handleUploadClick} className='mb-4'>
+            Selecionar imagem
           </Button>
 
           {previewURL && (
             <div className="relative mb-4">
-              <img ref={imgRef} src={previewURL} alt="Selected" className="max-w-full rounded shadow" />
+              <img ref={imgRef} src={previewURL} alt="Imagem selecionada" className="max-w-full rounded shadow" />
               {detections.map((obj, index) => (
                 <DetectedObject key={index} name={obj.name} score={obj.score} top={obj.y} left={obj.x} height={obj.height} width={obj.width} />
               ))}
@@ -106,15 +118,25 @@ export function ImageAnaliser() {
               disabled={loading}
               className={loading ? 'opacity-50 cursor-not-allowed' : ''}
             >
-              {loading ? 'Processing...' : 'Detect & Describe'}
+              {loading ? 'Processando...' : 'Processar'}
             </Button>
           )}
         </form>
 
+        {error && (
+          <Alert variant="destructive" className='bg-red-100'>
+            <ExclamationTriangleIcon className="h-4 w-4" />
+            <AlertTitle>Atenção</AlertTitle>
+            <AlertDescription>
+              {error}
+            </AlertDescription>
+          </Alert>
+        )}
+
         {description && (
-          <div className="mt-4">
-            <h2 className="text-xl font-semibold">Image Description:</h2>
-            <p>{description}</p>
+          <div>
+            <h2 className="text-xl font-semibold">Descrição da imagem</h2>
+            <p className='ImageDescription'>{description}</p>
           </div>
         )}
       </div>

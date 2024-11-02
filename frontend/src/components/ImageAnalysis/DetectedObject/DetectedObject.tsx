@@ -12,11 +12,12 @@ export function DetectedObject(props: DetectedObjectProps) {
 
   const styles = {top, left, height, width};
 
-  console.log(styles);
-
   return (
-    <div className="absolute border-4 border-[#00ff00] bg-transparent" style={styles}>
-      <strong>{name}</strong> - Score: {(score * 100).toFixed(2)}%
-    </div>
+    <div
+      className="DetectedObject absolute border-4 border-[#00ff00] bg-transparent"
+      style={styles}
+      data-name={name}
+      data-score={`${(score * 100).toFixed(1)}%`}
+    />
   )
 }

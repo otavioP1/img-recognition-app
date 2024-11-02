@@ -1,3 +1,5 @@
+@import url(./components/ImageAnalysis/ImageAnalyser.css);
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

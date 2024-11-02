@@ -1,4 +1,4 @@
-import { ImageAnaliser } from "./components/ImageAnalysis/ImageAnaliser.tsx"
+import { ImageAnaliser } from "./components/ImageAnalysis/ImageAnalyser.tsx"
 
 export function App() {
 

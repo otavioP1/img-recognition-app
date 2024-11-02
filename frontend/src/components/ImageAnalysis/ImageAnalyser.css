@@ -1,0 +1,5 @@
+@import url(.//DetectedObject/DetectedObject.css);
+
+.ImageDescription::first-letter {
+  text-transform: uppercase;
+}
