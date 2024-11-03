@@ -1,4 +1,5 @@
 @import url(./components/ImageAnalysis/ImageAnalyser.css);
+@import url(./styles/scrollbar.css);
 
 @tailwind base;
 @tailwind components;
