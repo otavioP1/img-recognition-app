@@ -1,10 +1,13 @@
-import { ImageAnaliser } from "./components/ImageAnalysis/ImageAnalyser.tsx"
+import { AuthProvider } from "./contexts/AuthContext.tsx"
+import { AppRoutes } from "./Routes.tsx"
 
 export function App() {
 
   return (
     <>
-      <ImageAnaliser />
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
     </>
   )
 }
