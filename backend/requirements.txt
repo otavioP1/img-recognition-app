@@ -6,3 +6,5 @@ transformers==4.46.0
 torch==2.5.0
 torchvision==0.20.0
 deep-translator==1.11.4
+pymongo==4.10.1
+bcrypt==4.2.0

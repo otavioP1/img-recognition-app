@@ -43,7 +43,7 @@ def analyse_image(request):
 	return jsonify({
 		"description": img_description,
 		"detections": detected_objects
-	});
+	})
 
 def describe_image(img):
 	img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
