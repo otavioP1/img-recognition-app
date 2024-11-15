@@ -25,7 +25,7 @@ NMS_THRESHOLD = 0.4
 processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
 model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
 
-def describe_image(request):
+def analyse_image(request):
 	if 'image' not in request.files:
 		return jsonify({"error": "Nenhuma imagem enviada"}), 400
 
@@ -37,6 +37,15 @@ def describe_image(request):
 	if img is None:
 		return jsonify({"error": "Imagem inválida"}), 400
 
+	img_description = describe_image(img);
+	detected_objects = detect_objects(img);
+
+	return jsonify({
+		"description": img_description,
+		"detections": detected_objects
+	});
+
+def describe_image(img):
 	img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 	inputs = processor(images=img, return_tensors="pt")
 
@@ -45,20 +54,9 @@ def describe_image(request):
 
 	translated_description = GoogleTranslator(source='auto', target='pt').translate(description)
 
-	return jsonify({"description": translated_description}), 200
+	return translated_description;
 
-def detect_objects(request):
-	if 'image' not in request.files:
-		return jsonify({"error": "Nenhuma imagem enviada"}), 400
-
-	file = request.files['image']
-
-	file_bytes = np.frombuffer(file.read(), np.uint8)
-	img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-
-	if img is None:
-		return jsonify({"error": "Imagem inválida"}), 400
-
+def detect_objects(img):
 	height, width, channels = img.shape
 
 	blob = cv2.dnn.blobFromImage(img,
@@ -107,4 +105,4 @@ def detect_objects(request):
 			}
 			detected_objects.append(obj)
 
-	return jsonify(detected_objects)
+	return detected_objects;

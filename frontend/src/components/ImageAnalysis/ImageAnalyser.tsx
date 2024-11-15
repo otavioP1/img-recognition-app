@@ -46,39 +46,25 @@ export function ImageAnaliser() {
 
     try {
       const API_PATH = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
-      const [detectionResponse, descriptionResponse] = await Promise.all([
-        fetch(`${API_PATH}/detect`, {
-          method: 'POST',
-          body: formData,
-        }),
-        fetch(`${API_PATH}/describe`, {
-          method: 'POST',
-          body: formData,
-        }),
-      ]);
+      const res = await fetch(`${API_PATH}/analyse`, {
+        method: 'POST',
+        body: formData,
+      });
 
-      if (!detectionResponse.ok) {
-        const errorData = await detectionResponse.json();
+      if (!res.ok) {
+        const errorData = await res.json();
         setError(`Não conseguimos processar a imagem: ${errorData.error}`);
         setLoading(false);
         return;
       }
 
-      const detectionData = await detectionResponse.json();
-      setDetections(detectionData);
-      if (detectionData.length == 0) {
+      const data = await res.json();
+      setDetections(data.detections);
+      if (data.detections == 0) {
         setError(`Nenhum objeto detectado`);
       }
 
-      if (!descriptionResponse.ok) {
-        const errorData = await descriptionResponse.json();
-        setError(`Não conseguimos processar a imagem: ${errorData.error}`);
-        setLoading(false);
-        return;
-      }
-
-      const descriptionData = await descriptionResponse.json();
-      setDescription(descriptionData.description);
+      setDescription(data.description);
     } catch (error) {
       console.error('Error:', error);
       setError('Ocorreu um erro ao processar a imagem.');
