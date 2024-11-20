@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
 
 export function LoginForm() {
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<{ email: string; password: string }>({email: '', password: ''});
@@ -14,12 +15,19 @@ export function LoginForm() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validate()) return false;
-
-    login();
+    setLoading(true);
+    const res = await login(email, password);
+    setLoading(false);
+    if (!res.success) {
+      let newErrors = { email: '', password: '' };
+      newErrors.password = res.error;
+      setErrors(newErrors);
+      return false;
+    }
     navigate('/image-analysis');
   };
 
@@ -75,8 +83,12 @@ export function LoginForm() {
               </p>
             }
           </div>
-          <Button type="submit" className="w-full">
-            Login
+          <Button
+            type="submit"
+            disabled={loading}
+            className={loading ? 'opacity-50 cursor-not-allowed w-full' : 'w-full'}
+          >
+            {loading ? 'Processando...' : 'Login'}
           </Button>
           <p className="text-center text-sm">
             Não possui uma conta?{' '}

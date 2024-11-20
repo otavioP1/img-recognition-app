@@ -33,7 +33,7 @@ def register_user(db, request):
 
 def login_user(db, request):
 	if 'email' not in request.form or 'password' not in request.form:
-		return jsonify({"error": "Email and password are required"}), 400
+		return jsonify({"error": "Informe o email e a senha"}), 400
 
 	email = request.form['email']
 	password = request.form['password']
@@ -41,7 +41,7 @@ def login_user(db, request):
 	user = db.users.find_one({"email": email})
 
 	if not user or not check_password_hash(user["password"], password):
-		return jsonify({"error": "Invalid email or password"}), 401
+		return jsonify({"error": "Email ou senha incorretos"}), 401
 
 	access_token = create_access_token(str(user["_id"]))
 
