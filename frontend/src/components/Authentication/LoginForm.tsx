@@ -19,9 +19,11 @@ export function LoginForm() {
     e.preventDefault();
 
     if (!validate()) return false;
+
     setLoading(true);
     const res = await login(email, password);
     setLoading(false);
+
     if (!res.success) {
       let newErrors = { email: '', password: '' };
       newErrors.password = res.error;
@@ -54,7 +56,7 @@ export function LoginForm() {
 
   return (
     <div className='flex h-screen items-center justify-center'>
-      <Card className="p-6 flex flex-col gap-4">
+      <Card className="p-6 flex flex-col gap-4 min-w-80">
         <h1 className="text-2xl font-bold text-center mb-6">ReconheceAI</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
