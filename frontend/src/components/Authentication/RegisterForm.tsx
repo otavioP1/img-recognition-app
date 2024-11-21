@@ -21,18 +21,42 @@ export function RegisterForm() {
 
     if (!validate()) return false;
 
-    // setLoading(true);
-    // const res = await login(email, password);
-    // setLoading(false);
-
-    // if (!res.success) {
-    //   let newErrors = { email: '', password: '', passwordConfirmation: '' };
-    //   newErrors.password = res.error;
-    //   setErrors(newErrors);
-    //   return false;
-    // }
+    setLoading(true);
+    const res = await register();
+    if (!res.success) {
+      setLoading(false);
+      let newErrors = { email: '', password: '', passwordConfirmation: '' };
+      newErrors.passwordConfirmation = res.error;
+      setErrors(newErrors);
+      return false;
+    }
+    await login(email, password);
+    setLoading(false);
     navigate('/image-analysis');
   };
+
+  const register = async (): Promise<{'success': boolean, 'error': string}> => {
+    const formData = new FormData();
+    formData.append('email', email);
+    formData.append('password', password);
+    formData.append('password_confirmation', passwordConfirmation);
+
+    try {
+      const API_PATH = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+      const res = await fetch(`${API_PATH}/register`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        return {'success': false, 'error': errorData.error};
+      }
+      return {'success': true, 'error': ''};
+    } catch (error) {
+      return {'success': false, 'error': 'Ocorreu um erro ao se registrar'};
+    }
+  }
 
   const validate = () :boolean => {
     let valid = true;
