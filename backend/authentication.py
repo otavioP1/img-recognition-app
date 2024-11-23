@@ -65,3 +65,7 @@ def create_access_token(user_id):
 	}
 	token = jwt.encode(payload, os.getenv('JWT_SECRET'), os.getenv('JWT_ENCRYPTION_ALG'))
 	return token
+
+def get_user_id(token):
+	user_data = jwt.decode(token, os.getenv('JWT_SECRET'), os.getenv('JWT_ENCRYPTION_ALG'))
+	return user_data.get('user_id')

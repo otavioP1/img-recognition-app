@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 
 interface AuthContextType {
   loggedIn: boolean;
+  authToken: string;
   login: (email: string, password: string) => Promise<{'success': boolean, 'error': string}>;
   logout: () => void;
 }
@@ -22,9 +23,11 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loggedIn, setLoggedIn] = useState(false);
+  const [authToken, setAuthToken] = useState('');
 
   const checkAuthStatus = async () => {
     const accessToken = localStorage.getItem('auth-token');
+    setAuthToken(accessToken || '');
     setLoggedIn(!!accessToken);
   };
 
@@ -48,6 +51,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const data = await res.json();
 
       localStorage.setItem('auth-token', data.access_token);
+      setAuthToken(data.access_token);
       setLoggedIn(true);
       return {'success': true, 'error': ''};
     } catch (error) {
@@ -57,6 +61,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const logout = async() => {
     localStorage.removeItem('auth-token');
+    setAuthToken('');
     setLoggedIn(false);
   }
 
@@ -64,7 +69,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     checkAuthStatus();
   }, []);
 
-  const value = { loggedIn, login, logout };
+  const value = { loggedIn, authToken, login, logout };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

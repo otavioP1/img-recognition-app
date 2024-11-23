@@ -4,6 +4,8 @@ import numpy as np
 from flask import jsonify
 from transformers import BlipProcessor, BlipForConditionalGeneration
 from deep_translator import GoogleTranslator
+import base64
+from authentication import get_user_id
 
 MODEL_DIR = "model"
 CONFIG_PATH = os.path.join(MODEL_DIR, "yolov3.cfg")
@@ -25,7 +27,7 @@ NMS_THRESHOLD = 0.4
 processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
 model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
 
-def analyse_image(request):
+def analyse_image(db, request):
 	if 'image' not in request.files:
 		return jsonify({"error": "Nenhuma imagem enviada"}), 400
 
@@ -39,6 +41,21 @@ def analyse_image(request):
 
 	img_description = describe_image(img);
 	detected_objects = detect_objects(img);
+
+	auth_header = request.headers.get('Authorization')
+	if auth_header:
+		token = auth_header.split(' ')[1]
+		user_id = get_user_id(token)
+
+		image_data = base64.b64encode(img_array).decode('utf-8')
+		image_entry = {
+			"user_id": user_id,
+			"description": img_description,
+			"detections": detected_objects,
+			"image_file": image_data
+		}
+
+		db.analysis.insert_one(image_entry)
 
 	return jsonify({
 		"description": img_description,

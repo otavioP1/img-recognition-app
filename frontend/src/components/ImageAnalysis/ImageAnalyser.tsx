@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/alert"
 
 import { Button } from '@/components/ui/button';
-
+import { useAuth } from '@/contexts/AuthContext.tsx';
 import { LogoutButton } from '../Authentication/LogoutButton.tsx';
 
 export function ImageAnaliser() {
@@ -22,6 +22,8 @@ export function ImageAnaliser() {
   const [error, setError] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
+
+  const { authToken } = useAuth();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -51,6 +53,9 @@ export function ImageAnaliser() {
       const res = await fetch(`${API_PATH}/analyse`, {
         method: 'POST',
         body: formData,
+        headers: {
+          'Authorization': `Bearer ${authToken}`,
+        },
       });
 
       if (!res.ok) {

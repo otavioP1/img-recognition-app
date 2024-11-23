@@ -19,7 +19,7 @@ except:
 
 @app.route('/analyse', methods=['POST'])
 def analyse_image_route():
-	return analyse_image(request)
+	return analyse_image(db, request)
 
 
 @app.route('/register', methods=['POST'])
