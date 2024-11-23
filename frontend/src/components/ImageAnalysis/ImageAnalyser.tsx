@@ -11,6 +11,8 @@ import {
 
 import { Button } from '@/components/ui/button';
 
+import { LogoutButton } from '../Authentication/LogoutButton.tsx';
+
 export function ImageAnaliser() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewURL, setPreviewURL] = useState<string | null>(null);
@@ -74,6 +76,8 @@ export function ImageAnaliser() {
   };
 
   return (
+    <>
+    <LogoutButton />
     <div className='flex h-screen items-center justify-center'>
       <div className="p-6 text-white bg-blue-900 rounded-lg shadow-lg flex flex-col gap-4">
         <h1 className="text-2xl font-bold">Análise de imagens</h1>
@@ -127,6 +131,7 @@ export function ImageAnaliser() {
         )}
       </div>
     </div>
+    </>
   );
 };
 
