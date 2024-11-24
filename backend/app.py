@@ -3,7 +3,7 @@ from flask_cors import CORS
 import os
 import dotenv
 from pymongo import MongoClient
-from image_analysis import analyse_image
+from image_analysis import analyse_image, get_upload_history
 from authentication import register_user, login_user
 
 dotenv.load_dotenv()
@@ -21,6 +21,9 @@ except:
 def analyse_image_route():
 	return analyse_image(db, request)
 
+@app.route('/history', methods=['GET'])
+def get_history_route():
+	return get_upload_history(db, request)
 
 @app.route('/register', methods=['POST'])
 def register_route():

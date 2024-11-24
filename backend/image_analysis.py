@@ -5,6 +5,7 @@ from flask import jsonify
 from transformers import BlipProcessor, BlipForConditionalGeneration
 from deep_translator import GoogleTranslator
 import base64
+from bson import ObjectId
 from authentication import get_user_id
 
 MODEL_DIR = "model"
@@ -61,6 +62,26 @@ def analyse_image(db, request):
 		"description": img_description,
 		"detections": detected_objects
 	})
+
+def get_upload_history(db, request):
+	auth_header = request.headers.get('Authorization')
+	if auth_header:
+		token = auth_header.split(' ')[1]
+		user_id = get_user_id(token)
+
+		user_images = db.analysis.find({"user_id": user_id})
+
+		response = [
+			{
+				"description": img["description"],
+				"detections": img["detections"],
+				"image_file": img["image_file"]
+			}
+			for img in user_images
+		]
+		return jsonify({'uploads': response})
+
+	return jsonify({'uploads': []})
 
 def describe_image(img):
 	img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
