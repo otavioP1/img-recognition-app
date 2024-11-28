@@ -98,7 +98,7 @@ export function AnalysisHistory() {
         <div className="flex flex-col justify-between max-w-lg w-full pr-4">
           <h1 className="text-2xl font-bold mb-4">Histórico de análises</h1>
           <Card className="p-4 flex flex-col items-center justify-center gap-6">
-            <p>Nenhuma analise realizada</p>
+            <p>Nenhuma análise realizada</p>
             <Button type='button' className="bg-green-600" onClick={newAnalysis}>Nova análise</Button>
           </Card>
         </div>
