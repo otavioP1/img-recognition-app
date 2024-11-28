@@ -9,9 +9,11 @@ import {
   AlertTitle,
 } from "@/components/ui/alert"
 
+import { Card } from '@/components/ui/card.tsx';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext.tsx';
 import { LogoutButton } from '../Authentication/LogoutButton.tsx';
+import { useNavigate } from 'react-router-dom';
 
 export function ImageAnaliser() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -24,6 +26,7 @@ export function ImageAnaliser() {
   const imgRef = useRef<HTMLImageElement>(null);
 
   const { authToken } = useAuth();
+  const navigate = useNavigate();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -80,11 +83,19 @@ export function ImageAnaliser() {
     }
   };
 
+  const backToHistpry = () => {
+    navigate('/analysis-history');
+  }
+
   return (
     <>
     <LogoutButton />
-    <div className='flex h-screen items-center justify-center'>
-      <div className="p-6 text-white bg-blue-900 rounded-lg shadow-lg flex flex-col gap-4">
+    <div className='flex flex-col h-screen items-center justify-center'>
+      <div className="flex justify-between max-w-lg w-full pr-4">
+        <h1 className="text-2xl font-bold mb-4">Análise de imagens</h1>
+        <Button type='button' onClick={backToHistpry}>Voltar</Button>
+      </div>
+      <Card className="p-4 flex flex-col gap-4 min-w-[512px]">
         <h1 className="text-2xl font-bold">Análise de imagens</h1>
         <form onSubmit={handleSubmit}>
           <input
@@ -134,7 +145,7 @@ export function ImageAnaliser() {
             <p className='ImageDescription'>{description}</p>
           </div>
         )}
-      </div>
+      </Card>
     </div>
     </>
   );

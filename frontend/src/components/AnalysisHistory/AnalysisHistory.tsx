@@ -106,11 +106,11 @@ export function AnalysisHistory() {
 
       {!loading && !error && images.length > 0 && (
         <>
-        <div className="flex justify-between max-w-lg w-full pr-4">
+        <div className="flex justify-between min-w-[512px] pr-4">
           <h1 className="text-2xl font-bold mb-4">Histórico de análises</h1>
           <Button type='button' className="bg-green-600" onClick={newAnalysis}>Nova análise</Button>
         </div>
-        <ScrollArea className="h-[600px] max-w-lg pr-4">
+        <ScrollArea className="h-[600px] min-w-[512px] pr-4">
           <div className="space-y-4">
             {images.map((image, index) => (
               <Card key={index} className="p-4">
@@ -122,15 +122,15 @@ export function AnalysisHistory() {
                         Ver análise
                       </Badge>
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent className="min-w-[512px] max-w-none w-max">
                       <DialogHeader>
-                        <DialogTitle>{`Image ${index + 1}`}</DialogTitle>
+                        <DialogTitle>{`Imagem ${index + 1}`}</DialogTitle>
                       </DialogHeader>
                       <div className="relative mb-2">
                         <img
                           src={`data:image/jpeg;base64,${image.image_file}`}
-                          alt={`Image ${index + 1}`}
-                          className="max-w-full rounded shadow"
+                          alt={`Imagem ${index + 1}`}
+                          className="rounded shadow"
                         />
                         {image.detections.map((obj, index) => (
                           <DetectedObject key={index} name={obj.name} score={obj.score} top={obj.y} left={obj.x} height={obj.height} width={obj.width} />
