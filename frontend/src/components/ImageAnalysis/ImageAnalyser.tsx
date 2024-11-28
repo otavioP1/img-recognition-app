@@ -96,7 +96,6 @@ export function ImageAnaliser() {
         <Button type='button' onClick={backToHistpry}>Voltar</Button>
       </div>
       <Card className="p-4 flex flex-col gap-4 min-w-[512px]">
-        <h1 className="text-2xl font-bold">Análise de imagens</h1>
         <form onSubmit={handleSubmit}>
           <input
             type="file"
@@ -105,12 +104,12 @@ export function ImageAnaliser() {
             onChange={handleFileChange}
             className='hidden'
           />
-          <Button type='button' variant={'outline'} onClick={handleUploadClick} className='mb-4'>
+          <Button type='button' variant={'outline'} onClick={handleUploadClick}>
             Selecionar imagem
           </Button>
 
           {previewURL && (
-            <div className="relative mb-4">
+            <div className="relative mt-4 mb-4">
               <img ref={imgRef} src={previewURL} alt="Imagem selecionada" className="max-w-full rounded shadow" />
               {detections.map((obj, index) => (
                 <DetectedObject key={index} name={obj.name} score={obj.score} top={obj.y} left={obj.x} height={obj.height} width={obj.width} />
