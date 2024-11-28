@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -7,10 +7,27 @@ import { useAuth } from "@/contexts/AuthContext";
 import { DetectedObject } from "../ImageAnalysis/DetectedObject/DetectedObject";
 import { LogoutButton } from "../Authentication/LogoutButton";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useNavigate } from "react-router-dom";
 
+interface detectionType {
+  height: number
+  name: string
+  score: number
+  width: number
+  x: number
+  y: number
+}
+
+interface imageType {
+  description: string,
+  detections: detectionType[],
+  image_file: string
+}
+
 export function AnalysisHistory() {
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState<imageType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -51,8 +68,6 @@ export function AnalysisHistory() {
     navigate('/image-analysis');
   }
 
-  if (error) return <p>Error: {error}</p>;
-
   return (
     <>
     <LogoutButton />
@@ -66,7 +81,20 @@ export function AnalysisHistory() {
         </div>
       )}
 
-      {!loading && images.length == 0 && (
+      {!loading && error && (
+        <div className="flex flex-col justify-between max-w-lg w-full pr-4">
+        <h1 className="text-2xl font-bold mb-4">Histórico de análises</h1>
+        <Alert variant="destructive" className='bg-red-100'>
+          <ExclamationTriangleIcon className="h-4 w-4" />
+          <AlertTitle>Atenção</AlertTitle>
+          <AlertDescription>
+            {error}
+          </AlertDescription>
+        </Alert>
+      </div>
+      )}
+
+      {!loading && !error && images.length == 0 && (
         <div className="flex flex-col justify-between max-w-lg w-full pr-4">
           <h1 className="text-2xl font-bold mb-4">Histórico de análises</h1>
           <Card className="p-4 flex flex-col items-center justify-center gap-6">
@@ -76,7 +104,7 @@ export function AnalysisHistory() {
         </div>
       )}
 
-      {!loading && images.length > 0 && (
+      {!loading && !error && images.length > 0 && (
         <>
         <div className="flex justify-between max-w-lg w-full pr-4">
           <h1 className="text-2xl font-bold mb-4">Histórico de análises</h1>
