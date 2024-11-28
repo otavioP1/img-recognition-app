@@ -32,7 +32,7 @@ export function RegisterForm() {
     }
     await login(email, password);
     setLoading(false);
-    navigate('/image-analysis');
+    navigate('/analysis-history');
   };
 
   const register = async (): Promise<{'success': boolean, 'error': string}> => {

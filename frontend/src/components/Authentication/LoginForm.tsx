@@ -30,7 +30,7 @@ export function LoginForm() {
       setErrors(newErrors);
       return false;
     }
-    navigate('/image-analysis');
+    navigate('/analysis-history');
   };
 
   const validate = () :boolean => {

@@ -5,6 +5,7 @@ import { useAuth } from './contexts/AuthContext';
 import { LoginForm } from './components/Authentication/LoginForm.tsx';
 import { RegisterForm } from './components/Authentication/RegisterForm.tsx';
 import { ImageAnaliser } from "./components/ImageAnalysis/ImageAnalyser.tsx"
+import { AnalysisHistory } from './components/AnalysisHistory/AnalysisHistory.tsx';
 
 export function AppRoutes() {
   const { loggedIn } = useAuth();
@@ -22,9 +23,10 @@ export function AppRoutes() {
         )}
         {loggedIn && (
           <>
-            <Route index element={<Navigate to="/image-analysis" />} />
+            <Route index element={<Navigate to="/analysis-history" />} />
             <Route path="/image-analysis" element={<ImageAnaliser />}/>
-            <Route path="*" element={<Navigate to="/image-analysis" />} />
+            <Route path="/analysis-history" element={<AnalysisHistory />}/>
+            <Route path="*" element={<Navigate to="/analysis-history" />} />
           </>
         )}
       </Routes>

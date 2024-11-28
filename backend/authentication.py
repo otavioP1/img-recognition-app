@@ -61,7 +61,7 @@ def check_password_hash(hashedPasword, password):
 def create_access_token(user_id):
 	payload = {
 		'user_id': user_id,
-		'exp': datetime.now(timezone.utc) + timedelta(seconds=86400)
+		'exp': datetime.now(timezone.utc) + timedelta(seconds=86400 * 30)
 	}
 	token = jwt.encode(payload, os.getenv('JWT_SECRET'), os.getenv('JWT_ENCRYPTION_ALG'))
 	return token
