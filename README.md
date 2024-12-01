@@ -12,6 +12,12 @@ cd frontend
 cp .env.example .env
 ```
 
+Copie o `backend/.env.example` para `backend/.env`
+```Bash
+cd backend
+cp .env.example .env
+```
+
 E suba os containers do docker
 ```Bash
 docker-compose up --build
